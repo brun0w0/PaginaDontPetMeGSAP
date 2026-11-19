@@ -1,0 +1,11 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Configuración personal del editor
+.vscode/
+.idea/
+
+# Por si alguien instala algo con npm
+node_modules/

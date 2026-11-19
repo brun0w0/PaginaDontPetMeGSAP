@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don't Pet Me · Un hámster pequeño, una gran aventura</title>
+  <meta name="description" content="Don't Pet Me: ayuda a Mochi, un pequeño hámster, a escapar de su jaula y volver a casa en una aventura de plataformas 3D llena de peligros gigantes.">
+  <link rel="icon" href="img/personajes/mochi_respirar.webp">
+
+  <!-- Tipografías: Fredoka para títulos (redondeada como el logo) y Nunito para el texto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- Dibujo de la semilla de girasol: se define una vez y se reutiliza con <use href="#semilla"> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="semilla" viewBox="0 0 40 64">
+      <path d="M20 2 C34 14 38 34 32 50 C28 60 12 60 8 50 C2 34 6 14 20 2 Z" fill="#3b2a22"/>
+      <path d="M20 6 C22 20 22 40 20 58" stroke="#f3e6cf" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M12 16 C11 28 11 40 13 52" stroke="#f3e6cf" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M28 16 C29 28 29 40 27 52" stroke="#f3e6cf" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Íconos de línea: usan el color del texto (currentColor) -->
+    <symbol id="i-salto" viewBox="0 0 24 24"><path d="M4 19c1.5-7 6-11 12-11"/><path d="M13 4.5 17 8l-4 3.5"/><path d="M3 21h6"/></symbol>
+    <symbol id="i-trepar" viewBox="0 0 24 24"><path d="M3 20 9 9l4 6 3-4 5 9z"/><path d="M8 11l1.5 1.5L11 11"/></symbol>
+    <symbol id="i-hilo" viewBox="0 0 24 24"><path d="M5 3h14"/><path d="M12 3v10"/><circle cx="12" cy="16.5" r="3.5"/></symbol>
+    <symbol id="i-tirolesa" viewBox="0 0 24 24"><path d="M3 4l18 8"/><path d="M12 8v5"/><path d="M9 13h6l-1 6h-4z"/></symbol>
+    <symbol id="i-caja" viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5"/><path d="M12 12v9"/></symbol>
+    <symbol id="i-velocidad" viewBox="0 0 24 24"><path d="M3 8h10a3 3 0 1 0-3-3"/><path d="M3 12h15a3 3 0 1 1-3 3"/><path d="M3 16h6"/></symbol>
+    <symbol id="i-nota" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol>
+    <symbol id="i-sonido" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4v-13l-5 4z"/><path d="M16.5 9a4.5 4.5 0 0 1 0 6"/><path d="M19 6.5a8 8 0 0 1 0 11"/></symbol>
+    <symbol id="i-aviso" viewBox="0 0 24 24"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4.5"/><path d="M12 17.5h.01"/></symbol>
+    <symbol id="i-mano" viewBox="0 0 24 24"><path d="M9 12V4.5a1.5 1.5 0 0 1 3 0V11"/><path d="M12 10a1.5 1.5 0 0 1 3 0v1.5"/><path d="M15 11a1.5 1.5 0 0 1 3 0v4a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-4.8-2.4L3.4 15a1.5 1.5 0 0 1 2.3-1.9L9 16"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
+    <symbol id="i-youtube" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></symbol>
+    <symbol id="i-ojo" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></symbol>
+    <symbol id="i-mapa" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+    <symbol id="i-rayo" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+    <symbol id="i-idea" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-pausa" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.2" fill="currentColor" stroke="none"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" fill="currentColor" stroke="none"/></symbol>
+  </svg>
+
+  <!-- ========== MENÚ SUPERIOR ========== -->
+  <header class="menu" id="menu">
+    <a href="#inicio" class="menu-logo"><img src="img/logo.webp" width="900" height="477" alt="Don't Pet Me"></a>
+    <button class="menu-boton" id="menuBoton" aria-label="Abrir menú" aria-expanded="false"><svg class="icono" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    <nav class="menu-enlaces" id="menuEnlaces">
+      <a href="#historia">Historia</a>
+      <a href="#mochi">Mochi</a>
+      <a href="#mundo">El mundo</a>
+      <a href="#enemigos">Enemigos</a>
+      <a href="#musica">Música</a>
+      <a href="#trailer">Tráiler</a>
+      <a href="https://iisunnyii29.itch.io/dont-petme" class="menu-destacado" target="_blank" rel="noopener">Jugar</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ========== 1. PORTADA (parallax con capas) ========== -->
+    <section class="portada" id="inicio">
+      <!-- Capa del fondo: el video animado de la fogata (se mueve más lento) -->
+      <div class="portada-fondo" data-velocidad="0.3">
+        <video src="video/fogata.mp4" poster="img/fogata_poster.jpg" autoplay muted loop playsinline></video>
+      </div>
+      <div class="portada-sombra"></div>
+
+      <!-- Capa de luciérnagas -->
+      <div class="luciernagas" data-velocidad="0.25" data-raton="12" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <!-- Capa de semillas flotando (cada una a distinta velocidad) -->
+      <div class="semillas-flotantes" aria-hidden="true">
+        <svg class="semilla s1" data-velocidad="-0.5" data-raton="30"><use href="#semilla"/></svg>
+        <svg class="semilla s2" data-velocidad="-0.9" data-raton="45"><use href="#semilla"/></svg>
+        <svg class="semilla s3" data-velocidad="-0.3" data-raton="20"><use href="#semilla"/></svg>
+        <svg class="semilla s4" data-velocidad="-1.1" data-raton="55"><use href="#semilla"/></svg>
+      </div>
+
+      <!-- Capa del logo y el texto -->
+      <div class="portada-contenido" data-velocidad="-0.25" data-raton="-10">
+        <img class="portada-logo" src="img/logo.webp" width="900" height="477" alt="Don't Pet Me">
+        <p class="portada-frase">Un hámster pequeño.<br><strong>Una gran aventura.</strong></p>
+        <div class="botones">
+          <a href="#trailer" class="boton boton-rojo"><svg class="icono" aria-hidden="true"><use href="#i-play"/></svg> Ver tráiler</a>
+          <a href="#mochi" class="boton boton-claro">Conoce a Mochi</a>
+        </div>
+      </div>
+
+      <!-- Capa delantera: el pasto (se mueve más rápido que todo) -->
+      <svg class="pasto" data-velocidad="-0.15" viewBox="0 0 1440 300" preserveAspectRatio="none" aria-hidden="true">
+        <path fill="#16302d" d="M0 160V96l18-60 10 58 16-82 12 80 20-54 8 56 22-90 10 92 18-66 14 60 20-40 6 44 24-86 12 88 16-58 10 52 22-72 12 76 18-48 8 50 20-92 14 94 16-60 10 58 24-70 10 70 18-44 10 46 20-88 12 90 16-62 14 60 20-50 8 54 22-84 10 82 18-56 12 58 20-74 10 76 16-46 10 48 24-90 12 92 18-64 10 62 20-52 8 56 22-80 12 82 16-58 12 56 20-70 10 72 18-44 10 46 22-86 12 88 16-60 12 58 20-48 8 50 24-92 10 90 18-66 12 64 20-54 10 56 16-78 12 80 18-50 10 52 22-74 10 76 20-88 12 90 16-56 12 58 20-62 8 64 18-46 10 48 22-84 14 86 16-60 10 58 20-70 12 72 18-52 10 54 V160Z"/>
+        <path fill="#214642" d="M0 160v-30l30-40 10 44 26-60 14 58 24-36 12 40 28-70 12 72 22-46 14 44 26-30 10 34 30-64 12 66 20-42 14 40 28-54 12 56 24-34 10 36 26-72 14 74 20-46 12 44 30-52 12 54 22-30 12 32 26-66 14 68 22-48 14 46 26-38 10 40 28-62 12 60 22-40 14 42 26-56 12 58 20-32 12 34 30-70 14 72 22-48 12 46 26-40 10 42 28-60 14 62 20-44 14 42 26-52 12 54 22-34 12 36 28-64 14 66 20-46 14 44 26-36 10 38 30-72 12 70 22-50 14 48 26-42 12 44 20-58 14 60 22-38 12 40 28-56 12 58 26-66 14 68 20-42 14 44 26-46 10 48 22-34 12 36 28-62 16 64 20-44 12 42 26-54 14 56 22-40 12 42 V160Z"/>
+        <rect y="158" width="1440" height="142" fill="#214642"/>
+      </svg>
+
+      <a href="#historia" class="flecha-abajo" aria-label="Bajar a la historia">
+        <span>Desliza</span>
+        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </section>
+
+    <!-- ========== 2. LA HISTORIA (viñetas del cómic en parallax) ========== -->
+    <section class="historia" id="historia">
+      <div class="contenedor">
+        <p class="etiqueta">La historia</p>
+        <h2 class="titulo">Todo empezó en el bosque…</h2>
+      </div>
+
+      <div class="historia-capitulo">
+        <p class="narracion">En lo más profundo del bosque vivía <strong>Mochi</strong>, un pequeño hámster con un apetito enorme.</p>
+        <div class="vinetas">
+          <img class="vineta v-izq" src="img/comic/01_nomnom.webp" width="590" height="305" alt="Mochi comiendo semillas: nom, nom, nom" data-velocidad="0.06" loading="lazy">
+          <img class="vineta v-der" src="img/comic/02_adondevas.webp" width="716" height="318" alt="—¿A dónde vas, Reo?" data-velocidad="-0.06" loading="lazy">
+        </div>
+      </div>
+
+      <div class="historia-capitulo">
+        <p class="narracion">Hasta que un día… <strong>alguien vino por él.</strong></p>
+        <div class="vinetas">
+          <img class="vineta v-izq" src="img/comic/03_sombra.webp" width="780" height="292" alt="Una sombra aparece entre los arbustos" data-velocidad="0.075" loading="lazy">
+          <img class="vineta v-der" src="img/comic/04_mano.webp" width="544" height="296" alt="Una mano gigante atrapa a Mochi" data-velocidad="-0.04" loading="lazy">
+          <img class="vineta v-centro" src="img/comic/05_yatengootro.webp" width="796" height="384" alt="—¡Ya tengo otro! ¡Qué bien!" data-velocidad="0.025" loading="lazy">
+        </div>
+      </div>
+
+      <div class="historia-capitulo">
+        <p class="narracion">Lo alejaron de su familia… <strong>y lo llevaron muy lejos de casa.</strong></p>
+        <div class="vinetas">
+          <img class="vineta v-izq" src="img/comic/06_camino.webp" width="514" height="386" alt="Se llevan a Mochi por el camino" data-velocidad="0.05" loading="lazy">
+          <img class="vineta v-der" src="img/comic/07_mochi.webp" width="511" height="370" alt="Su familia grita: ¡Mochi!" data-velocidad="-0.07" loading="lazy">
+          <img class="vineta v-centro pequena" src="img/comic/08_puno.webp" width="395" height="372" alt="Mochi atrapado en el puño, muy enojado" data-velocidad="0.1" loading="lazy">
+        </div>
+      </div>
+
+      <div class="historia-capitulo">
+        <p class="narracion">Despertó en una jaula. Pero hay algo que deberían saber de Mochi…</p>
+        <div class="vinetas">
+          <img class="vineta v-izq pequena" src="img/comic/10_oscuro.webp" width="524" height="360" alt="Todo se vuelve oscuro" data-velocidad="0.06" loading="lazy">
+          <img class="vineta v-der pequena" src="img/comic/12_jaula.webp" width="332" height="362" alt="Mochi encerrado tras los barrotes" data-velocidad="-0.05" loading="lazy">
+        </div>
+        <p class="remate">…<strong>no se deja acariciar.</strong></p>
+      </div>
+    </section>
+
+    <!-- ========== 3. CONOCE A MOCHI ========== -->
+    <section class="mochi" id="mochi">
+      <div class="mochi-circulo" data-velocidad="0.2" aria-hidden="true"></div>
+      <div class="contenedor mochi-grid">
+        <div class="mochi-visual">
+          <!-- Mochi interactivo: si intentas acariciarlo (clic), se enoja -->
+          <button class="mochi-boton" id="mochiBoton" aria-label="Intenta acariciar a Mochi">
+            <img src="img/personajes/mochi_festejo.webp" width="614" height="900" alt="Mochi, el hámster protagonista" id="mochiImagen" data-velocidad="-0.12">
+          </button>
+          <div class="globo" id="mochiGlobo" role="status" aria-live="polite">¡Ni se te ocurra!</div>
+          <p class="mochi-pista"><svg class="icono" aria-hidden="true"><use href="#i-mano"/></svg> Intenta acariciarlo… <span id="mochiContador"></span></p>
+        </div>
+
+        <div class="mochi-texto">
+          <p class="etiqueta">El protagonista</p>
+          <h2 class="titulo">Este es Mochi</h2>
+          <p class="parrafo-grande">Pequeño, gruñón y con mucho más valor que tamaño. Mochi solo quiere una cosa: <strong>volver a casa con su familia</strong>… y que nadie lo acaricie en el camino.</p>
+
+          <h3 class="subtitulo">Lo que sabe hacer</h3>
+          <ul class="habilidades">
+            <li class="aparecer"><span class="icono-caja"><svg class="icono" aria-hidden="true"><use href="#i-salto"/></svg></span> Correr y saltar</li>
+            <li class="aparecer"><span class="icono-caja"><svg class="icono" aria-hidden="true"><use href="#i-trepar"/></svg></span> Trepar paredes</li>
+            <li class="aparecer"><span class="icono-caja"><svg class="icono" aria-hidden="true"><use href="#i-hilo"/></svg></span> Columpiarse con hilo</li>
+            <li class="aparecer"><span class="icono-caja"><svg class="icono" aria-hidden="true"><use href="#i-tirolesa"/></svg></span> Bajar en tirolesa</li>
+            <li class="aparecer"><span class="icono-caja"><svg class="icono" aria-hidden="true"><use href="#i-caja"/></svg></span> Cargar y empujar cajas</li>
+            <li class="aparecer"><span class="icono-caja"><svg class="icono" aria-hidden="true"><use href="#i-velocidad"/></svg></span> Deslizarse a toda velocidad</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Otras poses de Mochi, flotando a distintas velocidades -->
+      <div class="contenedor poses">
+        <figure class="pose aparecer" data-velocidad="0.1">
+          <img src="img/personajes/mochi_respirar.webp" width="559" height="900" alt="Mochi en guardia" loading="lazy">
+          <figcaption>Siempre en guardia</figcaption>
+        </figure>
+        <figure class="pose aparecer" data-velocidad="-0.1">
+          <img src="img/personajes/mochi_correr.webp" width="597" height="900" alt="Mochi corriendo" loading="lazy">
+          <figcaption>Pequeñas patas, gran velocidad</figcaption>
+        </figure>
+        <figure class="pose aparecer" data-velocidad="0.16">
+          <img src="img/personajes/mochi_sixseven.webp" width="529" height="900" alt="Mochi haciendo un baile" loading="lazy">
+          <figcaption>Y con mucha actitud</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ========== 4. EL MUNDO (escenarios con fondo parallax) ========== -->
+    <section class="mundo" id="mundo">
+      <div class="contenedor mundo-intro">
+        <p class="etiqueta">El mundo</p>
+        <h2 class="titulo">Una casa enorme… vista desde abajo</h2>
+        <p class="parrafo-grande">A la altura de un hámster, <strong>una taza es una torre</strong>, <strong>una regla es un puente</strong> y <strong>una hormiga es un monstruo</strong>. Cada rincón de la casa es un nuevo reto.</p>
+      </div>
+
+      <!-- Los 3 mundos. En escritorio esta parte se queda fija y los mundos pasan de lado al hacer scroll -->
+      <div class="escenarios">
+        <div class="escenarios-marco">
+        <div class="escenarios-pista">
+
+      <!-- Escenario 1 -->
+      <article class="escenario">
+        <div class="escenario-fondo" data-velocidad="0.3">
+          <img src="img/escenarios/jaula.jpg" width="1600" height="900" alt="" loading="lazy">
+        </div>
+        <div class="contenedor escenario-contenido">
+          <div class="tarjeta aparecer">
+            <p class="numero">Mundo 1</p>
+            <h3>La Jaula</h3>
+            <p>Barrotes, un comedero y una rueda que no lleva a ninguna parte. Encuentra la forma de salir de tu prisión y cruza un escritorio lleno de cables, charcos y chispas.</p>
+            <p class="cancion"><svg class="icono" aria-hidden="true"><use href="#i-nota"/></svg> Suena: <em>Engranajes</em></p>
+          </div>
+          <div class="fotos">
+            <img class="foto" src="img/escenarios/escritorio.jpg" width="1600" height="900" alt="El escritorio fuera de la jaula" data-velocidad="-0.18" loading="lazy">
+          </div>
+        </div>
+      </article>
+
+      <!-- Escenario 2 -->
+      <article class="escenario escenario-derecha">
+        <div class="escenario-fondo" data-velocidad="0.3">
+          <img src="img/escenarios/libros_colgantes.jpg" width="1600" height="900" alt="" loading="lazy">
+        </div>
+        <div class="contenedor escenario-contenido">
+          <div class="tarjeta aparecer">
+            <p class="numero">Mundo 2</p>
+            <h3>El Cuarto</h3>
+            <p>Escala montañas de libros, cruza reglas como puentes, sobrevive al hormiguero, vuela con el ventilador y supera un juego de memoria donde las paredes te aplastan si fallas.</p>
+            <p class="cancion"><svg class="icono" aria-hidden="true"><use href="#i-nota"/></svg> Suena: <em>Aventura</em></p>
+          </div>
+          <div class="fotos">
+            <img class="foto" src="img/escenarios/ventilador.jpg" width="1600" height="900" alt="El ventilador gigante y las hormigas" data-velocidad="-0.2" loading="lazy">
+            <img class="foto foto-2" src="img/escenarios/regla_libros.jpg" width="1600" height="900" alt="Libros y reglas convertidos en puentes" data-velocidad="-0.05" loading="lazy">
+          </div>
+        </div>
+      </article>
+
+      <!-- Escenario 3 -->
+      <article class="escenario">
+        <div class="escenario-fondo" data-velocidad="0.3">
+          <img src="img/escenarios/pasillo_tunel.jpg" width="1600" height="900" alt="" loading="lazy">
+        </div>
+        <div class="contenedor escenario-contenido">
+          <div class="tarjeta aparecer">
+            <p class="numero">Mundo 3</p>
+            <h3>El Pasillo</h3>
+            <p>El camino a la libertad está lleno de ratoneras, escobas que caen, cables pelados… y una aspiradora robot que no deja de perseguirte. Usa túneles y tirolesas para escapar.</p>
+            <p class="cancion"><svg class="icono" aria-hidden="true"><use href="#i-nota"/></svg> Suena: <em>Run</em></p>
+          </div>
+          <div class="fotos">
+            <img class="foto" src="img/escenarios/pasillo_aspiradora.jpg" width="1600" height="900" alt="La aspiradora robot en el pasillo" data-velocidad="-0.18" loading="lazy">
+          </div>
+        </div>
+      </article>
+            </div>
+        </div>
+        <div class="escenarios-progreso" aria-hidden="true"><span></span></div>
+      </div>
+    </section>
+
+    <!-- ========== 5. ASÍ SE JUEGA (números + clips) ========== -->
+    <section class="jugar" id="jugar">
+      <div class="contenedor">
+        <p class="etiqueta">Así se juega</p>
+        <h2 class="titulo">Salta, trepa, esquiva… ¡y no mires abajo!</h2>
+
+        <div class="numeros">
+          <div class="numero-caja aparecer"><strong>3</strong><span>mundos a escala de hámster</span></div>
+          <div class="numero-caja aparecer"><strong>71</strong><span>semillas escondidas</span></div>
+          <div class="numero-caja aparecer"><strong>5</strong><span>enemigos gigantes</span></div>
+          <div class="numero-caja aparecer"><strong>∞</strong><span>formas de quedar como tortilla</span></div>
+        </div>
+
+        <div class="clips">
+          <figure class="clip aparecer" data-velocidad="0.08">
+            <img src="img/gifs/gameplay_1_cuerda_floja.gif" width="540" height="304" alt="Mochi cruzando una cuerda floja" loading="lazy">
+            <figcaption>Equilibrio sobre la cuerda floja</figcaption>
+          </figure>
+          <figure class="clip aparecer" data-velocidad="-0.06">
+            <img src="img/gifs/gameplay_2_salto_arana.gif" width="540" height="304" alt="Mochi saltando cerca de la araña" loading="lazy">
+            <figcaption>Saltos imposibles</figcaption>
+          </figure>
+          <figure class="clip aparecer" data-velocidad="0.12">
+            <img src="img/gifs/gameplay_4_libros_colgantes.gif" width="540" height="304" alt="Mochi sobre libros colgantes" loading="lazy">
+            <figcaption>Libros que se balancean</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- Bloque "troll": el juego tiene sentido del humor -->
+      <div class="contenedor troll">
+        <div class="troll-texto aparecer">
+          <h3 class="subtitulo"><svg class="icono" aria-hidden="true"><use href="#i-aviso"/></svg> Aviso: este juego tiene sentido del humor</h3>
+          <p>No todo es lo que parece. Hay <strong>banderas de control falsas</strong>, <strong>semillas que son trampa</strong>, <strong>bloques invisibles</strong> que te cortan el salto, plataformas que <strong>huyen</strong> cuando te acercas y yunques que te dejan <strong>plano como tortilla</strong>.</p>
+          <p>Vas a reír. Vas a gritar. Y vas a querer intentarlo una vez más.</p>
+        </div>
+        <img class="troll-foto aparecer" src="img/escenarios/yunque.jpg" width="1600" height="900" alt="Libros, un dedal y un yunque a punto de caer" data-velocidad="-0.1" loading="lazy">
+      </div>
+    </section>
+
+    <!-- ========== 6. ENEMIGOS ========== -->
+    <section class="enemigos" id="enemigos">
+      <div class="contenedor">
+        <p class="etiqueta">Cuidado</p>
+        <h2 class="titulo">Enemigos gigantes</h2>
+        <p class="parrafo-grande">Para ti son bichos pequeños. Para Mochi, son monstruos. <strong>Haz clic en cada uno</strong> para conocerlo.</p>
+
+        <!-- Tarjetas de los enemigos: al hacer clic se abre su ficha (las fichas están justo debajo) -->
+        <div class="enemigos-grid">
+          <button class="enemigo aparecer" data-ficha="ficha-hormigas" aria-label="Ver la ficha de Las Hormigas">
+            <img src="img/personajes/hormiga.webp" width="900" height="739" alt="Hormiga obrera" data-velocidad="-0.08" loading="lazy">
+            <span class="enemigo-pista"><svg class="icono" aria-hidden="true"><use href="#i-ojo"/></svg> Ver ficha</span>
+          </button>
+          <button class="enemigo aparecer" data-ficha="ficha-reina" aria-label="Ver la ficha de La Reina">
+            <img src="img/personajes/reina.webp" width="900" height="865" alt="La Hormiga Reina" data-velocidad="-0.14" loading="lazy">
+            <span class="enemigo-pista"><svg class="icono" aria-hidden="true"><use href="#i-ojo"/></svg> Ver ficha</span>
+          </button>
+          <button class="enemigo aparecer" data-ficha="ficha-arania" aria-label="Ver la ficha de La Araña">
+            <img src="img/personajes/arania.webp" width="900" height="776" alt="La Araña" data-velocidad="-0.1" loading="lazy">
+            <span class="enemigo-pista"><svg class="icono" aria-hidden="true"><use href="#i-ojo"/></svg> Ver ficha</span>
+          </button>
+          <button class="enemigo aparecer" data-ficha="ficha-cienpies" aria-label="Ver la ficha de El Ciempiés">
+            <img src="img/personajes/cienpies.webp" width="900" height="559" alt="El Ciempiés" data-velocidad="-0.06" loading="lazy">
+            <span class="enemigo-pista"><svg class="icono" aria-hidden="true"><use href="#i-ojo"/></svg> Ver ficha</span>
+          </button>
+          <button class="enemigo aparecer" data-ficha="ficha-aspiradora" aria-label="Ver la ficha de La Aspiradora Robot">
+            <img src="img/personajes/aspiradora.webp" width="900" height="645" alt="La Aspiradora Robot" data-velocidad="-0.12" loading="lazy">
+            <span class="enemigo-pista"><svg class="icono" aria-hidden="true"><use href="#i-ojo"/></svg> Ver ficha</span>
+          </button>
+        </div>
+      </div>
+
+    <!-- Ficha: Las Hormigas -->
+    <dialog class="ficha" id="ficha-hormigas" aria-labelledby="titulo-hormigas">
+      <button class="ficha-cerrar" aria-label="Cerrar"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button>
+      <div class="ficha-imagen">
+        <img src="img/personajes/hormiga.webp" width="900" height="739" alt="Hormiga obrera" loading="lazy">
+      </div>
+      <div class="ficha-texto">
+        <p class="ficha-mundo"><svg class="icono" aria-hidden="true"><use href="#i-mapa"/></svg> Mundo 2 · El Cuarto</p>
+        <h3 id="titulo-hormigas">Las Hormigas</h3>
+        <p class="ficha-apodo">La colonia nunca duerme</p>
+        <p>Viven en el hormiguero del cuarto y salen en fila a buscar comida… o a buscarte a ti. Cada hormiga tiene su propia personalidad: unas te persiguen directo, otras intentan cortarte el paso y otras dan vueltas por las esquinas.</p>
+
+        <h4><svg class="icono" aria-hidden="true"><use href="#i-rayo"/></svg> Cómo ataca</h4>
+        <ul>
+          <li>Se reparten por el hormiguero y luego van todas tras de ti.</li>
+          <li>Si te subes a una plataforma, algunas trepan para alcanzarte.</li>
+          <li>A veces caen desde arriba, justo donde estás.</li>
+          <li>Una sola te aturde; un enjambre entero te derrota.</li>
+        </ul>
+
+        <div class="ficha-consejo">
+          <h4><svg class="icono" aria-hidden="true"><use href="#i-idea"/></svg> Consejo para vencerlo</h4>
+          <p>Nunca te quedes quieto y no dejes que te rodeen. Busca huecos entre ellas para escapar.</p>
+        </div>
+
+        <div class="ficha-pie">
+          <p class="peligro">Peligro <span class="nivel" style="--nivel:3"></span></p>
+          <button class="boton-sonido" data-sonido="audio/hormigas_marcha_loop.wav"><svg class="icono" aria-hidden="true"><use href="#i-sonido"/></svg> Escuchar</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Ficha: La Reina -->
+    <dialog class="ficha" id="ficha-reina" aria-labelledby="titulo-reina">
+      <button class="ficha-cerrar" aria-label="Cerrar"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button>
+      <div class="ficha-imagen">
+        <img src="img/personajes/reina.webp" width="900" height="865" alt="La Hormiga Reina" loading="lazy">
+      </div>
+      <div class="ficha-texto">
+        <p class="ficha-mundo"><svg class="icono" aria-hidden="true"><use href="#i-mapa"/></svg> Mundo 2 · El Cuarto</p>
+        <h3 id="titulo-reina">La Reina</h3>
+        <p class="ficha-apodo">La que manda en el hormiguero</p>
+        <p>Con su corona dorada y sus alas brillantes, la Reina no se mueve de su trono en el fondo del hormiguero. No le hace falta: tiene a toda la colonia trabajando para ella.</p>
+
+        <h4><svg class="icono" aria-hidden="true"><use href="#i-rayo"/></svg> Cómo ataca</h4>
+        <ul>
+          <li>Vigila todo el tiempo y voltea a los lados.</li>
+          <li>Si te acercas demasiado, se pone en alerta.</li>
+          <li>Tocarla es peligroso: su sala está muy bien protegida.</li>
+        </ul>
+
+        <div class="ficha-consejo">
+          <h4><svg class="icono" aria-hidden="true"><use href="#i-idea"/></svg> Consejo para vencerlo</h4>
+          <p>Mantén tu distancia y no la provoques. Tu objetivo es salir del hormiguero, no pelear con ella.</p>
+        </div>
+
+        <div class="ficha-pie">
+          <p class="peligro">Peligro <span class="nivel" style="--nivel:4"></span></p>
+          <button class="boton-sonido" data-sonido="audio/hormiga_chillido.wav"><svg class="icono" aria-hidden="true"><use href="#i-sonido"/></svg> Escuchar</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Ficha: La Araña -->
+    <dialog class="ficha" id="ficha-arania" aria-labelledby="titulo-arania">
+      <button class="ficha-cerrar" aria-label="Cerrar"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button>
+      <div class="ficha-imagen">
+        <img src="img/personajes/arania.webp" width="900" height="776" alt="La Araña" loading="lazy">
+      </div>
+      <div class="ficha-texto">
+        <p class="ficha-mundo"><svg class="icono" aria-hidden="true"><use href="#i-mapa"/></svg> Mundo 2 · El Cuarto</p>
+        <h3 id="titulo-arania">La Araña</h3>
+        <p class="ficha-apodo">Ocho patas y mucha puntería</p>
+        <p>Las arañas del cuarto tejen sus trampas entre libros y estantes. Hay dos tipos: una que te persigue escupiendo telaraña y otra que se queda en lo alto de la estantería lanzando bolas de telaraña.</p>
+
+        <h4><svg class="icono" aria-hidden="true"><use href="#i-rayo"/></svg> Cómo ataca</h4>
+        <ul>
+          <li>Lanza bolas de telaraña que ruedan por los estantes y caen al siguiente, como barriles.</li>
+          <li>También las arroja por el aire, apuntando hacia ti.</li>
+          <li>La araña cazadora te sigue y te escupe telaraña cuando te tiene a la vista.</li>
+          <li>Si una bola te alcanza, te derriba y te deja aturdido.</li>
+        </ul>
+
+        <div class="ficha-consejo">
+          <h4><svg class="icono" aria-hidden="true"><use href="#i-idea"/></svg> Consejo para vencerlo</h4>
+          <p>Salta las bolas que ruedan y fíjate en las que vuelan para apartarte a tiempo.</p>
+        </div>
+
+        <div class="ficha-pie">
+          <p class="peligro">Peligro <span class="nivel" style="--nivel:4"></span></p>
+          <button class="boton-sonido" data-sonido="audio/arana_chillido.wav"><svg class="icono" aria-hidden="true"><use href="#i-sonido"/></svg> Escuchar</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Ficha: El Ciempiés -->
+    <dialog class="ficha" id="ficha-cienpies" aria-labelledby="titulo-cienpies">
+      <button class="ficha-cerrar" aria-label="Cerrar"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button>
+      <div class="ficha-imagen">
+        <img src="img/personajes/cienpies.webp" width="900" height="559" alt="El Ciempiés" loading="lazy">
+      </div>
+      <div class="ficha-texto">
+        <p class="ficha-mundo"><svg class="icono" aria-hidden="true"><use href="#i-mapa"/></svg> Mundo 1 · La Jaula y Mundo 2 · El Cuarto</p>
+        <h3 id="titulo-cienpies">El Ciempiés</h3>
+        <p class="ficha-apodo">Cien patas, cero descanso</p>
+        <p>Largo, peludo y siempre en movimiento. El ciempiés recorre su camino de un lado a otro y no se detiene por nada. Es el primer enemigo que Mochi se encuentra, ¡incluso dentro de su propia jaula!</p>
+
+        <h4><svg class="icono" aria-hidden="true"><use href="#i-rayo"/></svg> Cómo ataca</h4>
+        <ul>
+          <li>Camina en línea recta y se da la vuelta al llegar a una pared o a un borde.</li>
+          <li>Si lo tocas de frente o de lado, pierdes.</li>
+        </ul>
+
+        <div class="ficha-consejo">
+          <h4><svg class="icono" aria-hidden="true"><use href="#i-idea"/></svg> Consejo para vencerlo</h4>
+          <p>¡Salta encima de él! Lo aplastas y rebotas. Calcula bien el salto mientras va y viene.</p>
+        </div>
+
+        <div class="ficha-pie">
+          <p class="peligro">Peligro <span class="nivel" style="--nivel:2"></span></p>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Ficha: La Aspiradora Robot -->
+    <dialog class="ficha" id="ficha-aspiradora" aria-labelledby="titulo-aspiradora">
+      <button class="ficha-cerrar" aria-label="Cerrar"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button>
+      <div class="ficha-imagen">
+        <img src="img/personajes/aspiradora.webp" width="900" height="645" alt="La Aspiradora Robot" loading="lazy">
+      </div>
+      <div class="ficha-texto">
+        <p class="ficha-mundo"><svg class="icono" aria-hidden="true"><use href="#i-mapa"/></svg> Mundo 3 · El Pasillo</p>
+        <h3 id="titulo-aspiradora">La Aspiradora Robot</h3>
+        <p class="ficha-apodo">El terror del pasillo</p>
+        <p>Una aspiradora robot que confunde a Mochi con un ratón. Duerme en su base hasta que entras en su zona… y entonces no deja de perseguirte por todo el pasillo.</p>
+
+        <h4><svg class="icono" aria-hidden="true"><use href="#i-rayo"/></svg> Cómo ataca</h4>
+        <ul>
+          <li>Te persigue por cualquier terreno: sube escalones, rampas y empuja los objetos ligeros.</li>
+          <li>Cada cierto tiempo aspira hacia delante para atraparte.</li>
+          <li>Cuando parpadea, avisa que va a embestir… y si estás más alto, ¡salta!</li>
+          <li>Si se atora o se queda atrás, reaparece cerca de ti.</li>
+        </ul>
+
+        <div class="ficha-consejo">
+          <h4><svg class="icono" aria-hidden="true"><use href="#i-idea"/></svg> Consejo para vencerlo</h4>
+          <p>Cuando empiece a parpadear, apártate de su camino. Usa los túneles y la tirolesa para sacarle ventaja.</p>
+        </div>
+
+        <div class="ficha-pie">
+          <p class="peligro">Peligro <span class="nivel" style="--nivel:5"></span></p>
+          <button class="boton-sonido" data-sonido="audio/aspiradora_alerta.wav"><svg class="icono" aria-hidden="true"><use href="#i-sonido"/></svg> Escuchar</button>
+        </div>
+      </div>
+    </dialog>
+    </section>
+
+    <!-- ========== 7. MÚSICA ========== -->
+    <section class="musica" id="musica">
+      <div class="notas" aria-hidden="true">
+        <span data-velocidad="-0.3"><svg class="icono" aria-hidden="true"><use href="#i-nota"/></svg></span><span data-velocidad="-0.6"><svg class="icono" aria-hidden="true"><use href="#i-nota"/></svg></span><span data-velocidad="-0.2"><svg class="icono" aria-hidden="true"><use href="#i-nota"/></svg></span><span data-velocidad="-0.8"><svg class="icono" aria-hidden="true"><use href="#i-nota"/></svg></span>
+      </div>
+      <div class="contenedor">
+        <p class="etiqueta">Banda sonora</p>
+        <h2 class="titulo">Música con mucho corazón</h2>
+        <p class="parrafo-grande">Cada mundo tiene su propia canción, compuesta para la aventura de Mochi. Dale play y escúchalas.</p>
+
+        <div class="pistas">
+          <div class="pista aparecer" data-audio="audio/inicio.mp3">
+            <button class="pista-play" aria-label="Reproducir Inicio"><svg class="icono" aria-hidden="true"><use href="#i-play"/></svg></button>
+            <div class="pista-info">
+              <h3>Inicio</h3>
+              <p>El tema principal. Tierno y cálido, como el hogar de Mochi.</p>
+              <div class="pista-barra"><div class="pista-progreso"></div></div>
+            </div>
+            <div class="ecualizador" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="pista aparecer" data-audio="audio/engranajes.mp3">
+            <button class="pista-play" aria-label="Reproducir Engranajes"><svg class="icono" aria-hidden="true"><use href="#i-play"/></svg></button>
+            <div class="pista-info">
+              <h3>Engranajes</h3>
+              <p>Mundo 1 · La Jaula. Mecanismos, ingenio y un plan de escape.</p>
+              <div class="pista-barra"><div class="pista-progreso"></div></div>
+            </div>
+            <div class="ecualizador" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="pista aparecer" data-audio="audio/aventura.mp3">
+            <button class="pista-play" aria-label="Reproducir Aventura"><svg class="icono" aria-hidden="true"><use href="#i-play"/></svg></button>
+            <div class="pista-info">
+              <h3>Aventura</h3>
+              <p>Mundo 2 · El Cuarto. Para explorar cada estante y cada rincón.</p>
+              <div class="pista-barra"><div class="pista-progreso"></div></div>
+            </div>
+            <div class="ecualizador" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="pista aparecer" data-audio="audio/run.mp3">
+            <button class="pista-play" aria-label="Reproducir Run"><svg class="icono" aria-hidden="true"><use href="#i-play"/></svg></button>
+            <div class="pista-info">
+              <h3>Run</h3>
+              <p>Mundo 3 · El Pasillo. ¡Corre, Mochi, que viene la aspiradora!</p>
+              <div class="pista-barra"><div class="pista-progreso"></div></div>
+            </div>
+            <div class="ecualizador" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+
+        <h3 class="subtitulo centrado">Y Mochi también tiene mucho que decir</h3>
+        <div class="sonidos">
+          <button class="sonido" data-sonido="audio/salto_boing.wav"><svg class="icono" aria-hidden="true"><use href="#i-salto"/></svg> ¡Boing!</button>
+          <button class="sonido" data-sonido="audio/recoger_semilla.wav"><svg class="icono" aria-hidden="true"><use href="#semilla"/></svg> Semilla</button>
+          <button class="sonido" data-sonido="audio/voz_risita.wav"><svg class="icono" aria-hidden="true"><use href="#i-sonido"/></svg> Risita</button>
+          <button class="sonido" data-sonido="audio/voz_feliz.wav"><svg class="icono" aria-hidden="true"><use href="#i-sonido"/></svg> Feliz</button>
+          <button class="sonido" data-sonido="audio/voz_enojado_tierno.wav"><svg class="icono" aria-hidden="true"><use href="#i-sonido"/></svg> Enojado</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 8. TRÁILER ========== -->
+    <section class="trailer" id="trailer">
+      <div class="contenedor">
+        <p class="etiqueta">Míralo en acción</p>
+        <h2 class="titulo">Tráiler</h2>
+        <!-- El tráiler viene del canal de YouTube.
+             "videoseries?list=UU..." muestra los videos subidos al canal (el ID del canal cambiando "UC" por "UU").
+             Si quieres un video específico, cambia el src por: https://www.youtube-nocookie.com/embed/ID_DEL_VIDEO -->
+        <div class="video-marco aparecer">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/videoseries?list=UUwrgNJMjuqe6yDbM3uZjHgA"
+            title="Tráiler de Don't Pet Me en YouTube"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <div class="botones">
+          <a href="https://www.youtube.com/channel/UCwrgNJMjuqe6yDbM3uZjHgA" class="boton boton-rojo" target="_blank" rel="noopener">
+            <svg class="icono" aria-hidden="true"><use href="#i-youtube"/></svg> Ver el canal en YouTube
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 9. CIERRE ========== -->
+    <section class="cierre">
+      <div class="cierre-fondo" data-velocidad="0.35">
+        <img src="img/escenarios/molino.jpg" width="1600" height="900" alt="" loading="lazy">
+      </div>
+      <div class="contenedor cierre-contenido">
+        <img class="cierre-mochi" src="img/personajes/mochi_respirar.webp" width="559" height="900" alt="Mochi" data-velocidad="-0.15" loading="lazy">
+        <div>
+          <img class="cierre-logo" src="img/logo.webp" width="900" height="477" alt="Don't Pet Me" loading="lazy">
+          <p class="portada-frase">Un hámster pequeño.<br><strong>Una gran aventura.</strong></p>
+          <p class="plataformas">Disponible para Windows y macOS</p>
+          <div class="botones">
+            <a href="https://iisunnyii29.itch.io/dont-petme" class="boton boton-rojo" target="_blank" rel="noopener">Jugar ahora en itch.io</a>
+            <a href="#trailer" class="boton boton-claro">Ver tráiler</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Don't Pet Me · Hecho con cariño (pero sin caricias)</p>
+    <p class="creditos-titulo">Desarrollado por</p>
+    <ul class="creditos">
+      <li>Bryan Chuc</li>
+      <li>Dhayan Drollat</li>
+      <li>Bruno Llovera</li>
+      <li>Giovanni Medina</li>
+      <li>Ahuizotl Morales</li>
+    </ul>
+  </footer>
+
+  <!-- GSAP: librería de animación (ScrollTrigger = animaciones con el scroll, SplitText = separar texto en palabras) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollToPlugin.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
